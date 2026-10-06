@@ -26,6 +26,8 @@
 .portfolio-workbench *::before,
 .portfolio-workbench *::after { box-sizing: border-box; }
 .portfolio-workbench main { scroll-snap-type: none; }
+.skip-link { position: absolute; z-index: 50; top: 10px; left: 10px; padding: 10px 14px; transform: translateY(-160%); background: var(--wb-paper); color: var(--wb-bg) !important; font-size: 13px; }
+.skip-link:focus { transform: translateY(0); }
 .portfolio-workbench a { color: inherit; text-decoration: none; }
 .portfolio-workbench button { color: inherit; font: inherit; }
 .portfolio-workbench button:focus-visible,

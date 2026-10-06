@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ArrowDown, ArrowRight, ArrowUpRight, Github, Linkedin, Menu, X } from 'lucide-react'
+import { ArrowDown, ArrowRight, ArrowUpRight, Menu, X } from 'lucide-react'
 import './portfolio-workbench.css'
 
 const projects = [
@@ -7,24 +7,24 @@ const projects = [
     id: '01',
     name: 'AURA',
     category: 'PERSONAL INTELLIGENCE',
-    summary: 'An exploration of intelligent personal productivity.',
-    idea: 'A local-first Android workspace for collecting tasks and shaping a day around them.',
-    system: 'Compose UI → ViewModel → StateFlow → Room → WorkManager, with a natural-language layer for schedule entry.',
-    build: 'Kotlin, Jetpack Compose, Room, StateFlow, WorkManager, Gemini',
-    learning: 'Designing a useful boundary between conversational input, structured data, and dependable background work.',
-    status: 'PERSONAL BUILD · IN PROGRESS',
+    summary: 'A personal productivity system, explored from the inside out.',
+    idea: 'Make a personal schedule easier to shape using natural language and a clear view of what comes next.',
+    system: 'Compose UI → ViewModel → StateFlow → Room → WorkManager → natural-language layer.',
+    build: 'Android, Jetpack Compose, Room, StateFlow, WorkManager',
+    learning: 'Exploring the boundaries between a reactive interface, local persistence, background work, and natural-language input.',
+    status: 'PROJECT EXPLORATION',
     visual: 'aura',
     visualLabel: 'A product-system sketch',
   },
   {
     id: '02',
     name: 'PADHO',
-    category: 'AI-ASSISTED NEWSROOM',
-    summary: 'A media pipeline that turns news sources into short-form stories.',
-    idea: 'Explore how a small newsroom workflow could take a story from feed ingestion through narration and visual publishing.',
-    system: 'RSS → processing → AI-assisted writing → text-to-speech → media generation → Express → SQLite → publishing.',
-    build: 'Node.js, Gemini, Edge TTS, FFmpeg, Express, SQLite',
-    learning: 'Making each transformation inspectable—and keeping editorial review part of an automated workflow.',
+    category: 'MEDIA AUTOMATION',
+    summary: 'An AI-assisted newsroom and media automation pipeline.',
+    idea: 'Explore how a story can move through a repeatable production pipeline, from source material to a publishable media format.',
+    system: 'RSS → processing → AI → TTS → media generation → Express → SQLite → publishing.',
+    build: 'RSS, AI, TTS, media generation, Express, SQLite',
+    learning: 'Thinking through the hand-offs between text, audio, media assets, and a publishing queue.',
     status: 'PIPELINE VISUALIZATION · NOT LIVE',
     image: '/projects/padho/newsroom.jpg',
     visualLabel: 'Newsroom pipeline interface',
@@ -46,13 +46,13 @@ const projects = [
     id: '04',
     name: 'SMART OFFICE',
     category: 'IOT & SIMULATION',
-    summary: 'An exploration of occupancy-aware spaces and energy use.',
-    idea: 'Model how room occupancy and sensor signals could inform a more responsive office environment.',
-    system: 'Sensor inputs → occupancy model → room state → lighting and energy decisions.',
-    build: 'IoT concepts, occupancy detection, simulation',
-    learning: 'Thinking through the gap between a sensor reading and a useful system decision.',
-    status: 'SIMULATION / CONCEPT',
-    image: '/projects/smart-office/hero.png',
+    summary: 'Occupancy, energy, and the systems that connect them.',
+    idea: 'Explore how a workspace might respond to occupancy and environmental context rather than running on fixed assumptions.',
+    system: 'Sensors → occupancy signal → decision logic → simulated office response.',
+    build: 'IoT, occupancy detection, energy optimization, simulation',
+    learning: 'Connecting sensing, simple system logic, and an interface for observing a simulated environment.',
+    status: 'SIMULATION',
+    image: '/projects/smart_office.jpg',
     visualLabel: 'Smart office project visual',
   },
   {
@@ -131,7 +131,7 @@ function Navigation() {
       <nav className="desktop-nav" aria-label="Main navigation">
         {links.map(([href, label]) => <a key={href} href={`#${href}`}>{label}</a>)}
       </nav>
-      <div className="header-status"><span className="header-time">{time} IST</span><span className="online-dot" /><span className="online-label">SYSTEM ONLINE</span></div>
+      <div className="header-status"><span className="header-time">{time} IST</span><span className="online-dot" /><span className="online-label">AVAILABLE / CHENNAI</span></div>
       <button className="menu-toggle" onClick={() => setMenuOpen((open) => !open)} aria-expanded={menuOpen} aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}>
         {menuOpen ? <X size={20} strokeWidth={1.5} /> : <Menu size={20} strokeWidth={1.5} />}
       </button>
@@ -174,7 +174,7 @@ function Hero() {
 }
 
 function Introduction() {
-  return <section className="introduction section-pad" id="about">
+  return <section className="introduction section-pad" id="approach">
     <SectionMark index="01" label="A NOTE ON HOW I BUILD" />
     <div className="intro-body">
       <span className="quote-mark" aria-hidden="true">"</span>
@@ -218,7 +218,7 @@ function ProjectArchive() {
       <div className="project-index" role="tablist" aria-label="Select a project">
         {projects.map((item, index) => <button key={item.id} className={`project-tab${selected === index ? ' selected' : ''}`} onClick={() => setSelected(index)} role="tab" id={`project-tab-${index}`} aria-selected={selected === index} aria-controls="project-panel">
           <span className="mono tab-number">{item.id}</span><span className="tab-name">{item.name}</span><ArrowUpRight className="tab-arrow" size={16} />
-        </button>)}}
+        </button>)}
         <p className="mono index-note">FIVE THREADS<br />STILL UNFOLDING</p>
       </div>
       <article className="project-detail" id="project-panel" role="tabpanel" aria-labelledby={`project-tab-${selected}`} key={project.id}>
@@ -244,11 +244,6 @@ function SystemsPlayground() {
   const system = systems[activeSystem]
 
   useEffect(() => {
-    setActiveNode(0)
-    setRunning(false)
-  }, [activeSystem])
-
-  useEffect(() => {
     if (!running) return undefined
     const interval = window.setInterval(() => setActiveNode((node) => (node + 1) % system.nodes.length), 900)
     return () => window.clearInterval(interval)
@@ -259,8 +254,8 @@ function SystemsPlayground() {
     <div className="systems-heading"><h2>How the pieces<br /><em>talk to each other.</em></h2><p>These maps describe the shape of the work—not a live service. Select a node to see its role.</p></div>
     <div className="systems-console">
       <div className="console-head"><div className="system-switch" role="tablist" aria-label="Choose a system">
-        <button role="tab" aria-selected={activeSystem === 'aura'} onClick={() => setActiveSystem('aura')}>AURA / ANDROID</button>
-        <button role="tab" aria-selected={activeSystem === 'padho'} onClick={() => setActiveSystem('padho')}>PADHO / MEDIA</button>
+        <button role="tab" aria-selected={activeSystem === 'aura'} onClick={() => { setActiveSystem('aura'); setActiveNode(0); setRunning(false) }}>AURA / ANDROID</button>
+        <button role="tab" aria-selected={activeSystem === 'padho'} onClick={() => { setActiveSystem('padho'); setActiveNode(0); setRunning(false) }}>PADHO / MEDIA</button>
       </div><span className="mono console-visual-label">ARCHITECTURE VISUALIZATION</span></div>
       <div className="flow-map" aria-label={`${system.name} architecture nodes`}>
         {system.nodes.map(([name], index) => <div className="flow-item" key={`${activeSystem}-${name}`}>
@@ -268,7 +263,7 @@ function SystemsPlayground() {
             <span className="mono">{String(index + 1).padStart(2, '0')}</span><strong>{name}</strong><span className="node-light" />
           </button>
           {index < system.nodes.length - 1 && <span className={`flow-connector${running ? ' connector-running' : ''}`} aria-hidden="true"><span /></span>}
-        </div>)}}
+        </div>)}
       </div>
       <div className="console-footer"><p className="node-explanation"><span className="mono">NODE / {String(activeNode + 1).padStart(2, '0')}</span>{system.nodes[activeNode][1]}</p><button className={`run-button${running ? ' is-running' : ''}`} onClick={() => setRunning((value) => !value)} aria-pressed={running}><span className="run-indicator" />{running ? 'PAUSE FLOW' : 'TRACE THE FLOW'}<ArrowRight size={15} /></button></div>
     </div>
@@ -282,7 +277,7 @@ function BuildMethod() {
     <SectionMark index="04" label="A PRACTICE, NOT A CHECKLIST" />
     <div className="method-heading"><h2>Make it clear.<br /><em>Then make it real.</em></h2><p className="mono method-stamp">HOW I BUILD / {current[0]}</p></div>
     <div className="method-track" role="tablist" aria-label="Build process">
-      {processSteps.map(([number, label], index) => <button key={number} className={`method-step${activeStep === index ? ' method-step-active' : ''}`} role="tab" aria-selected={activeStep === index} onClick={() => setActiveStep(index)}><span className="mono">{number}</span><strong>{label}</strong><span className="method-step-line" /></button>)}}
+      {processSteps.map(([number, label], index) => <button key={number} className={`method-step${activeStep === index ? ' method-step-active' : ''}`} role="tab" aria-selected={activeStep === index} onClick={() => setActiveStep(index)}><span className="mono">{number}</span><strong>{label}</strong><span className="method-step-line" /></button>)}
     </div>
     <div className="method-reveal" role="tabpanel"><span className="mono">{current[0]} / {current[1]}</span><p>{current[2]}</p><span className="method-cursor" aria-hidden="true">_</span></div>
   </section>
@@ -314,7 +309,7 @@ function LearningAndAcademics() {
 }
 
 function AboutAndNow() {
-  return <section className="about-section section-pad">
+  return <section className="about-section section-pad" id="about">
     <SectionMark index="07" label="A LITTLE MORE PERSONAL" />
     <div className="about-layout"><h2>I build because<br />I want to know<br /><em>what's possible.</em></h2><div className="about-copy"><p>I'm a computer science engineering student in Chennai, also studying data science at IIT Madras. I'm interested in tools that make complicated things easier to understand—and in the small decisions that make software feel considered.</p><p>Long term, I'm drawn to building products of my own. For now, that means following curiosity into projects, learning the fundamentals, and staying honest about what I haven't figured out yet.</p><div className="currently-block"><span className="mono currently-title"><span className="live-pulse" /> CURRENTLY / 2026</span><div className="currently-row"><span className="mono">LEARNING</span><p>Data structures <i>·</i> Java <i>·</i> Statistics <i>·</i> Machine learning</p></div><div className="currently-row"><span className="mono">BUILDING</span><p>Personal software <i>·</i> AI workflows <i>·</i> Experiments</p></div><div className="currently-row"><span className="mono">EXPLORING</span><p>Artificial intelligence <i>·</i> Automation <i>·</i> Product development</p></div></div></div></div>
   </section>
@@ -324,7 +319,7 @@ function Contact() {
   return <section className="contact-section section-pad" id="contact">
     <SectionMark index="08" label="THE NEXT CONVERSATION" />
     <div className="contact-layout"><div><p className="mono contact-kicker">HAVE A QUESTION / AN IDEA?</p><h2>Maybe we<br /><em>should build it.</em></h2></div><a className="contact-email" href="mailto:shritenzin@gmail.com"><span>WRITE ME A NOTE</span><strong>shritenzin<br />@gmail.com</strong><ArrowUpRight size={22} /></a></div>
-    <div className="social-links"><a href="https://github.com/TenzinWangchuKhongsai" target="_blank" rel="noreferrer"><Github size={16} /> GITHUB <ArrowUpRight size={13} /></a><a href="https://www.linkedin.com/in/tenzin-wangchu-khongsai/" target="_blank" rel="noreferrer"><Linkedin size={16} /> LINKEDIN <ArrowUpRight size={13} /></a><span className="mono social-location">CHENNAI / INDIA</span></div>
+    <div className="social-links"><a href="https://github.com/TenzinWangchuKhongsai" target="_blank" rel="noreferrer">GITHUB <ArrowUpRight size={13} /></a><a href="https://www.linkedin.com/in/tenzin-wangchu-khongsai/" target="_blank" rel="noreferrer">LINKEDIN <ArrowUpRight size={13} /></a><span className="mono social-location">CHENNAI / INDIA</span></div>
   </section>
 }
 
@@ -333,5 +328,5 @@ function Footer() {
 }
 
 export default function PortfolioWorkbench() {
-  return <div className="portfolio-workbench"><Navigation /><main><Hero /><Introduction /><ProjectArchive /><SystemsPlayground /><BuildMethod /><LearningAndAcademics /><AboutAndNow /><Contact /></main><Footer /></div>
+  return <div className="portfolio-workbench"><a className="skip-link" href="#main-content">Skip to content</a><Navigation /><main id="main-content"><Hero /><Introduction /><ProjectArchive /><SystemsPlayground /><BuildMethod /><LearningAndAcademics /><AboutAndNow /><Contact /></main><Footer /></div>
 }
