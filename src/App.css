@@ -1,0 +1,159 @@
+/* ═══════════════════════════════════════════════════════════════
+   App-level cinematic utilities
+   Tenzin Wangchu Khongsai — Flagship Portfolio
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Full-bleed utility ─── */
+.full-bleed {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
+/* ─── Sticky scene wrapper ─── */
+.scene-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ─── Project visual containers ─── */
+.project-visual {
+  position: relative;
+  overflow: hidden;
+}
+
+.project-visual svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ─── Architecture tooltip ─── */
+.arch-tooltip {
+  position: absolute;
+  background: var(--surface);
+  border: 1px solid var(--border-warm);
+  padding: 1rem 1.25rem;
+  max-width: 280px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--ivory);
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.arch-tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Mobile navigation overlay ─── */
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--black);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: var(--page-margin);
+}
+
+.nav-overlay a {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 9vw, 5.5rem);
+  line-height: 1.15;
+  color: var(--ivory);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-overlay a:hover {
+  color: var(--copper);
+}
+
+/* ─── Editorial thin line separator ─── */
+.editorial-line {
+  position: relative;
+}
+
+.editorial-line::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: var(--page-margin);
+  right: var(--page-margin);
+  height: 1px;
+  background: var(--border);
+}
+
+/* ─── Oversized background text ─── */
+.bg-text-oversized {
+  font-family: var(--font-serif);
+  font-size: clamp(8rem, 22vw, 28rem);
+  line-height: 0.8;
+  color: rgba(241, 238, 230, 0.015);
+  user-select: none;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Light section variant */
+.section-light .bg-text-oversized {
+  color: rgba(7, 8, 9, 0.02);
+}
+
+/* ─── Project index marker ─── */
+.project-index {
+  font-family: var(--font-serif);
+  font-size: clamp(6rem, 14vw, 16rem);
+  line-height: 0.85;
+  color: rgba(241, 238, 230, 0.02);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ─── Metadata row ─── */
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.meta-row .dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--copper);
+  flex-shrink: 0;
+}
+
+/* ─── Section number label ─── */
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-num::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--text-tertiary);
+}
