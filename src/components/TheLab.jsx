@@ -1,234 +1,260 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
+
+const skillCategories = [
+  {
+    title: 'PROGRAMMING LANGUAGES',
+    color: '#FBC086',
+    skills: [
+      { name: 'Python', level: 4, note: 'Primary Language · AI & Systems' },
+      { name: 'Java', level: 3, note: 'Object-Oriented Design & Android' },
+      { name: 'C', level: 3, note: 'Low-Level Systems & Memory' },
+      { name: 'JavaScript', level: 3, note: 'Web Engines & Event Loops' },
+    ],
+  },
+  {
+    title: 'WEB ARCHITECTURE',
+    color: '#F8B1C6',
+    skills: [
+      { name: 'React', level: 3, note: 'Component State & Modern Hooks' },
+      { name: 'Tailwind CSS', level: 4, note: 'Fluid Responsive Layouts' },
+      { name: 'HTML5 / Modern DOM', level: 4, note: 'Semantic Architecture' },
+      { name: 'REST APIs & Webhooks', level: 3, note: 'Integration Pipelines' },
+    ],
+  },
+  {
+    title: 'DATA SCIENCE & AI',
+    color: '#FBC086',
+    skills: [
+      { name: 'NumPy & Pandas', level: 3, note: 'Data Munging & Vectorization' },
+      { name: 'Probability & Statistics', level: 3, note: 'IIT Madras Rigorous Coursework' },
+      { name: 'Machine Learning', level: 2, note: 'Supervised Models & Evaluators' },
+      { name: 'Computer Vision', level: 2, note: 'OpenCV & Image Processing' },
+    ],
+  },
+  {
+    title: 'SYSTEMS & PLATFORMS',
+    color: '#F8B1C6',
+    skills: [
+      { name: 'SQL & Relational DBMS', level: 3, note: 'Schema Design & Indexing' },
+      { name: 'Git & GitHub Workflows', level: 3, note: 'Version Control & Releases' },
+      { name: 'Finite Automata Theory', level: 3, note: 'State Machine Construction' },
+      { name: 'IoT Protocols & Networks', level: 2, note: 'Sensor Simulation Models' },
+    ],
+  },
+];
+
+const achievements = [
+  {
+    idx: '01',
+    title: 'TECH STAR SUMMIT WINNER',
+    org: 'SIMATS Engineering College',
+    tag: 'FIRST PRIZE',
+    color: '#FBC086',
+  },
+  {
+    idx: '02',
+    title: 'MODEL UNITED NATIONS',
+    org: 'International Affairs & Policy',
+    tag: 'DELEGATE',
+    color: '#F8B1C6',
+  },
+  {
+    idx: '03',
+    title: 'YOUTH PARLIAMENTS',
+    org: 'National Civic Forums',
+    tag: 'ACTIVE PARTICIPANT',
+    color: '#FBC086',
+  },
+  {
+    idx: '04',
+    title: 'HACKATHONS & CODE MEETS',
+    org: 'Engineering Project Competitions',
+    tag: 'COMPETITOR',
+    color: '#F8B1C6',
+  },
+  {
+    idx: '05',
+    title: 'IIT MADRAS FOUNDATIONAL',
+    org: 'BS in Data Science Programme',
+    tag: 'CGPA 8.0 COMPLETED',
+    color: '#FBC086',
+  },
+];
+
+function LevelDots({ level, activeColor }) {
+  return (
+    <div className="flex gap-1.5 items-center">
+      {[1, 2, 3, 4].map((dot) => (
+        <motion.span
+          key={dot}
+          initial={{ scale: 0.2, opacity: 0.2 }}
+          whileInView={{ scale: 1, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{
+            duration: 0.35,
+            delay: dot * 0.08,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="w-2 h-2 rounded-full transition-all duration-300"
+          style={{
+            background: dot <= level ? activeColor : 'rgba(255, 255, 255, 0.1)',
+            boxShadow: dot <= level ? `0 0 8px ${activeColor}60` : 'none',
+          }}
+        />
+      ))}
+    </div>
+  );
+}
 
 export default function TheLab() {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.15 });
-  const [expandedCard, setExpandedCard] = useState(null);
 
   return (
-    <section ref={sectionRef} id="lab" className="snap-section section-dark py-16 sm:py-20 relative noise">
-      {/* Copper ambient atmosphere */}
-      <div className="absolute inset-0 ambient-copper opacity-60 pointer-events-none" />
-
-      <div className="scene-pad relative z-10 max-w-6xl mx-auto">
-        {/* Section Headline */}
-        <div className="max-w-3xl mb-12">
+    <section
+      ref={sectionRef}
+      id="lab"
+      className="relative select-none"
+      style={{
+        background: '#080A0F',
+        paddingTop: 'clamp(5rem, 8vw, 8rem)',
+        paddingBottom: 'clamp(5rem, 8vw, 8rem)',
+      }}
+    >
+      <div
+        className="max-w-[1520px] mx-auto"
+        style={{ padding: '0 clamp(1.25rem, 4vw, 3.5rem)' }}
+      >
+        {/* ── Section Header ── */}
+        <div className="mb-12 sm:mb-16">
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6 }}
-            className="mb-3 text-[10px] text-[var(--copper)] font-semibold font-mono tracking-[0.2em]"
+            className="font-mono text-xs font-semibold tracking-[0.28em] uppercase text-[#F8B1C6] mb-3"
           >
-            CHAPTER 04 — EXPERIMENTAL ARCHIVE
+            CHAPTER 04 // TECHNICAL ARSENAL
           </motion.div>
 
           <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-display text-[var(--ivory)] font-serif leading-[0.95]"
+            className="font-black uppercase text-white tracking-tight leading-[0.88]"
+            style={{
+              fontFamily: "'Barlow Condensed', sans-serif",
+              fontSize: 'clamp(3rem, 9vw, 7.5rem)',
+            }}
           >
-            THE<br />
-            <span className="italic text-[var(--text-secondary)]">LAB.</span>
+            SKILLS &amp; <span style={{ color: '#FBC086' }}>TOOLS</span>
           </motion.h2>
 
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-sm sm:text-base text-[var(--ivory-muted)] mt-4 leading-relaxed max-w-xl"
+            className="text-white/60 text-sm sm:text-base leading-relaxed mt-4 max-w-xl"
           >
-            Software experiments, network topologies, and computational explorations built from first principles. Click any card for FLIP expanded execution view.
+            Transparent inventory of technical proficiency across languages, distributed frameworks, and data science tooling. Dots represent actual hands-on depth.
           </motion.p>
         </div>
 
-        {/* ─── 3 experiments with FLIP layout expansion (reference video (1).mp4) ─── */}
-        <div className="space-y-10">
-
-          {/* 01: VISIONFRAME */}
-          <motion.div
-            layout
-            onClick={() => setExpandedCard(expandedCard === 'vision' ? null : 'vision')}
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.25 }}
-            className={`border-t border-[var(--border)] pt-6 cursor-pointer transition-colors ${
-              expandedCard === 'vision' ? 'bg-[#14171D]/90 p-6 rounded-2xl border-[var(--copper)]' : ''
-            }`}
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              <div className="lg:col-span-4">
-                <div className="flex items-center gap-2 mb-2 font-mono text-[10px]">
-                  <span className="text-[var(--copper)] font-bold">01</span>
-                  <span className="text-[var(--text-secondary)] tracking-wider">COMPUTER VISION</span>
-                  {expandedCard === 'vision' && <span className="text-[#E89052] font-bold ml-auto">[FLIP EXPANDED]</span>}
-                </div>
-                <h3 className="font-serif text-xl sm:text-2xl text-[var(--ivory)] mb-2 leading-tight">
-                  VISIONFRAME — CAMERA & VIDEO ENGINE
-                </h3>
-                <div className="text-[10px] font-mono text-[var(--copper-light)] mb-3">
-                  PYTHON · OPENCV · NUMPY · MULTI-FORMAT
-                </div>
-                <p className="text-xs text-[var(--ivory-muted)] leading-relaxed">
-                  Modular real-time video processing with frame-by-frame spatial convolutions, edge detection, and headless stream extraction.
-                </p>
-              </div>
-
-              <div className="lg:col-span-8 bg-[#14171D] p-4 rounded-lg border border-white/5 font-mono text-[10px] space-y-2">
-                <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                  <span className="text-[var(--copper)] font-bold">STREAM PIPELINE SPEC</span>
-                  <span className="text-emerald-400">30 FPS · OPENCV 4.x</span>
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="p-2.5 bg-black/40 rounded border border-white/5">
-                    <div className="text-[var(--ivory)] font-bold">FRAME INGEST</div>
-                    <div className="text-[var(--text-secondary)] text-[9px] mt-0.5">cv2.VideoCapture(0)</div>
-                    <div className="text-[var(--copper-light)] text-[9px]">1080p Stream</div>
-                  </div>
-                  <div className="p-2.5 bg-black/40 rounded border border-white/5">
-                    <div className="text-[var(--ivory)] font-bold">SPATIAL TRANSFORM</div>
-                    <div className="text-[var(--text-secondary)] text-[9px] mt-0.5">Gaussian & Sobel</div>
-                    <div className="text-[var(--copper-light)] text-[9px]">NumPy Convolution</div>
-                  </div>
-                  <div className="p-2.5 bg-black/40 rounded border border-white/5">
-                    <div className="text-[var(--ivory)] font-bold">ENCODING SINK</div>
-                    <div className="text-[var(--text-secondary)] text-[9px] mt-0.5">cv2.VideoWriter(H.264)</div>
-                    <div className="text-emerald-400 text-[9px]">Ring Buffer</div>
-                  </div>
+        {/* ── 4-Column Skill Categories (GTA VI rounded card style) ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {skillCategories.map((cat, idx) => (
+            <motion.div
+              key={cat.title}
+              className="p-6 sm:p-7 rounded-[26px] border border-white/[0.08] flex flex-col justify-between transition-all duration-300 hover:border-white/20 hover:-translate-y-1.5"
+              style={{ background: '#0F131C', boxShadow: '0 12px 35px rgba(0,0,0,0.5)' }}
+            >
+              <div>
+                <div className="flex items-center justify-between pb-4 mb-5 border-t-2" style={{ borderColor: cat.color }}>
+                  <h3
+                    className="font-black text-lg text-white uppercase tracking-wider"
+                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  >
+                    {cat.title}
+                  </h3>
                 </div>
 
-                {expandedCard === 'vision' && (
-                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-4 pt-3 border-t border-white/10 space-y-2">
-                    <div className="text-[var(--copper)] font-bold">LIVE FRAME BUFFER MEMORY SPECS</div>
-                    <div className="p-3 bg-black/60 rounded text-[9px] text-white/70 space-y-1">
-                      <div>Matrix Dim: 1920 × 1080 × 3 (BGR24)</div>
-                      <div>Ring Buffer Capacity: 120 Frames (4.0s depth)</div>
-                      <div>Kernel: 3×3 Sobel Gradient [x_weight: 0.5, y_weight: 0.5]</div>
+                <div className="space-y-4">
+                  {cat.skills.map((skill) => (
+                    <div key={skill.name} className="flex flex-col gap-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs font-bold text-white tracking-wide">
+                          {skill.name}
+                        </span>
+                        <LevelDots level={skill.level} activeColor={cat.color} />
+                      </div>
+                      <span className="font-mono text-[10px] text-white/40">
+                        {skill.note}
+                      </span>
                     </div>
-                  </motion.div>
-                )}
+                  ))}
+                </div>
               </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* ── Legend Strip ── */}
+        <div className="mt-8 flex flex-wrap items-center gap-6 pt-4 border-t border-white/5">
+          <span className="font-mono text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase">
+            PROFICIENCY SCALE:
+          </span>
+          {[
+            { dots: 1, label: 'EXPLORING' },
+            { dots: 2, label: 'LEARNING' },
+            { dots: 3, label: 'USING' },
+            { dots: 4, label: 'PRIMARY' },
+          ].map(({ dots, label }) => (
+            <div key={label} className="flex items-center gap-2">
+              <LevelDots level={dots} activeColor="#FBC086" />
+              <span className="font-mono text-[10px] tracking-wider text-white/50">
+                {label}
+              </span>
             </div>
-          </motion.div>
+          ))}
+        </div>
 
-          {/* 02: SMART CAMPUS NETWORK */}
-          <motion.div
-            layout
-            onClick={() => setExpandedCard(expandedCard === 'campus' ? null : 'campus')}
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.35 }}
-            className={`border-t border-[var(--border)] pt-6 cursor-pointer transition-colors ${
-              expandedCard === 'campus' ? 'bg-[#14171D]/90 p-6 rounded-2xl border-[var(--copper)]' : ''
-            }`}
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              <div className="lg:col-span-4 space-y-3">
-                <div className="flex items-center gap-2 font-mono text-[10px]">
-                  <span className="text-[var(--copper)] font-bold">02</span>
-                  <span className="text-[var(--text-secondary)] tracking-wider">NETWORK ARCHITECTURE</span>
-                  {expandedCard === 'campus' && <span className="text-[#E89052] font-bold ml-auto">[FLIP EXPANDED]</span>}
-                </div>
-                <h3 className="font-serif text-xl sm:text-2xl text-[var(--ivory)] leading-tight">
-                  SMART CAMPUS NETWORK
-                </h3>
-                <div className="text-[10px] font-mono text-[var(--copper-light)]">
-                  CISCO · VLAN 802.1Q · ACL
-                </div>
-                <p className="text-xs text-[var(--ivory-muted)] leading-relaxed">
-                  Hierarchical campus network with multi-VLAN segmentation, router-on-a-stick subinterfaces, DHCP pools, and firewall ACLs.
-                </p>
-                <div className="flex flex-wrap gap-1.5 text-[9px] font-mono text-[var(--text-secondary)]">
-                  <span className="px-1.5 py-0.5 rounded bg-white/5">802.1Q Trunking</span>
-                  <span className="px-1.5 py-0.5 rounded bg-white/5">Subinterfaces</span>
-                  <span className="px-1.5 py-0.5 rounded bg-white/5">ACL Isolation</span>
-                </div>
-              </div>
+        {/* ── Achievements & Recognition Strip ── */}
+        <div className="mt-16 pt-10 border-t border-white/10">
+          <div className="font-mono text-xs font-semibold tracking-[0.28em] uppercase text-[#F8B1C6] mb-6">
+            VERIFIED ACHIEVEMENTS &amp; RECOGNITION
+          </div>
 
-              <div className="lg:col-span-8">
-                <div className="rounded-lg overflow-hidden border border-[var(--border)] bg-black/60 p-2.5">
-                  <div className="aspect-[16/10] overflow-hidden rounded bg-black">
-                    <img
-                      src="/projects/smart-campus/topology.jpeg"
-                      alt="Smart Campus Network Topology"
-                      className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-500"
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {achievements.map((ach, idx) => (
+              <motion.div
+                key={ach.title}
+                className="p-5 rounded-[20px] border border-white/[0.08] flex flex-col justify-between transition-all duration-300 hover:border-white/25 hover:-translate-y-1.5"
+                style={{ background: '#0F131C', boxShadow: '0 10px 30px rgba(0,0,0,0.4)' }}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3 pb-3 border-b border-white/5">
+                    <span className="font-mono text-[11px] tracking-[0.24em] font-bold text-white/50">
+                      // {ach.idx}
+                    </span>
+                    <span
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ background: ach.color }}
                     />
                   </div>
-                  <div className="mt-2 flex items-center justify-between font-mono text-[10px]">
-                    <span className="text-[var(--copper)] font-semibold">VERIFIED PACKET TRACER TOPOLOGY</span>
-                    <span className="text-[var(--text-tertiary)]">VLAN ROUTING</span>
-                  </div>
-
-                  {expandedCard === 'campus' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-3 pt-3 border-t border-white/10 font-mono text-[9px] text-white/70 space-y-1">
-                      <div>VLAN 10: Faculty Data (192.168.10.0/24)</div>
-                      <div>VLAN 20: Student Wi-Fi (192.168.20.0/24)</div>
-                      <div>VLAN 30: IoT Sensor Mesh (192.168.30.0/24)</div>
-                    </motion.div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* 03: CPU SCHEDULER */}
-          <motion.div
-            layout
-            onClick={() => setExpandedCard(expandedCard === 'cpu' ? null : 'cpu')}
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.45 }}
-            className={`border-t border-[var(--border)] pt-6 cursor-pointer transition-colors ${
-              expandedCard === 'cpu' ? 'bg-[#14171D]/90 p-6 rounded-2xl border-[var(--copper)]' : ''
-            }`}
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              <div className="lg:col-span-5 space-y-3">
-                <div className="flex items-center gap-2 font-mono text-[10px]">
-                  <span className="text-[var(--copper)] font-bold">03</span>
-                  <span className="text-[var(--text-secondary)] tracking-wider">OPERATING SYSTEMS</span>
-                  {expandedCard === 'cpu' && <span className="text-[#E89052] font-bold ml-auto">[FLIP EXPANDED]</span>}
-                </div>
-                <h3 className="font-serif text-xl sm:text-2xl text-[var(--ivory)] leading-tight">
-                  EDGE-AWARE CPU SCHEDULER
-                </h3>
-                <div className="text-[10px] font-mono text-[var(--copper-light)]">
-                  C / PYTHON · GANTT TIMELINE
-                </div>
-                <p className="text-xs text-[var(--ivory-muted)] leading-relaxed">
-                  Process scheduling simulation benchmarking greedy edge-aware algorithms against FCFS, SJF, and Round Robin.
-                </p>
-                <div className="p-2.5 rounded bg-[#14171D] border border-white/5 font-mono text-[10px]">
-                  <div className="text-[var(--copper)] font-bold">HEURISTIC METRIC</div>
-                  <div className="text-[var(--ivory-muted)] text-[9px] mt-1">
-                    Priority = (Burst × Deadline) / (IO Wait + 1)
-                  </div>
-                </div>
-              </div>
-
-              <div className="lg:col-span-7 grid grid-cols-2 gap-4">
-                <div className="p-3.5 rounded-lg bg-[#14171D] border border-white/5 font-mono space-y-1.5">
-                  <div className="text-[10px] text-[var(--copper)] font-bold">04 // GRAPH TOPOLOGY</div>
-                  <div className="font-serif text-base text-[var(--ivory)]">Network Mesh & Packets</div>
-                  <p className="text-[10px] text-[var(--text-secondary)] leading-relaxed">
-                    Dijkstra and Bellman-Ford shortest-path simulations with dynamic congestion modeling.
+                  <h4
+                    className="font-black text-base text-white uppercase leading-snug"
+                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  >
+                    {ach.title}
+                  </h4>
+                  <p className="font-mono text-[10px] text-white/40 mt-1">
+                    {ach.org}
                   </p>
                 </div>
-                <div className="p-3.5 rounded-lg bg-[#14171D] border border-white/5 font-mono space-y-1.5">
-                  <div className="text-[10px] text-[var(--copper)] font-bold">05 // SENSOR TELEMETRY</div>
-                  <div className="font-serif text-base text-[var(--ivory)]">Microcontroller Signals</div>
-                  <p className="text-[10px] text-[var(--text-secondary)] leading-relaxed">
-                    Hardware interrupt handling, PIR debounce, and serial packet telemetry for facility automation.
-                  </p>
+                <div className="mt-4 pt-2 border-t border-white/5">
+                  <span
+                    className="font-mono text-[9px] font-bold tracking-wider uppercase"
+                    style={{ color: ach.color }}
+                  >
+                    {ach.tag}
+                  </span>
                 </div>
-              </div>
-            </div>
-          </motion.div>
-
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
   );
 }
-

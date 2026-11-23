@@ -1,46 +1,61 @@
 import './App.css';
+import SmoothScroll from './components/SmoothScroll';
+import ScrollProgress from './components/ScrollProgress';
 import CustomCursor from './components/CustomCursor';
 import EditorialNav from './components/EditorialNav';
 import CinematicHero from './components/CinematicHero';
+import EditionCards from './components/EditionCards';
+import BackOfBox from './components/BackOfBox';
 import ProjectSequence from './components/ProjectSequence';
-import ArchitectureLab from './components/ArchitectureLab';
 import EditorialIdentity from './components/EditorialIdentity';
 import TheLab from './components/TheLab';
+import NewswireSection from './components/NewswireSection';
 import ContactFinale from './components/ContactFinale';
-import Interactive3DCanvas from './components/Interactive3DCanvas';
+import ScrollAnimations from './components/ScrollAnimations';
 
 export default function App() {
   return (
-    <>
-      {/* Interactive 3D Canvas Background */}
-      <Interactive3DCanvas />
+    <SmoothScroll>
+      <div className="bg-[#080A0F] text-[#F4F4F0] min-h-screen selection:bg-[#F8B1C6] selection:text-[#0B0E14]">
+        {/* Real-time fluid scroll indicator */}
+        <ScrollProgress />
 
-      {/* Custom cursor — desktop only */}
-      <CustomCursor />
+        {/* GSAP cinematic scroll animations — zero layout change */}
+        <ScrollAnimations />
 
-      {/* Editorial navigation — appears after hero scroll */}
-      <EditorialNav />
+        {/* Custom smooth cursor — desktop only */}
+        <CustomCursor />
 
-      {/* Visual narrative: six scenes */}
-      <main>
-        {/* Scene 01 — Overture */}
-        <CinematicHero />
+        {/* GTA VI fixed navigation bar */}
+        <EditorialNav />
 
-        {/* Scene 02 — What I Build */}
-        <ProjectSequence />
+        {/* Main page content — Exact GTA VI Section Anatomy */}
+        <main>
+          {/* 1. Hero Poster with Metallic TWK Logo & Video Background */}
+          <CinematicHero />
 
-        {/* Scene 03 — How It Works */}
-        <ArchitectureLab />
+          {/* 2. Ultimate Edition Cards — Dual Academic Degrees (SIMATS & IIT Madras) */}
+          <EditionCards />
 
-        {/* Scene 04 — The Person (light section) */}
-        <EditorialIdentity />
+          {/* 3. Back-of-Box Narrative Block — "Chennai, India. I BUILD TO UNDERSTAND." */}
+          <BackOfBox />
 
-        {/* Scene 05 — The Lab */}
-        <TheLab />
+          {/* 4. Promocards — The 6 Core Engineering Projects (Padho, SecLogix, Smart Office, etc.) */}
+          <ProjectSequence />
 
-        {/* Scene 06 — Let's Build Something */}
-        <ContactFinale />
-      </main>
-    </>
+          {/* 5. Editorial Builder Profile — Portraits, Timeline & Continuous Marquee */}
+          <EditorialIdentity />
+
+          {/* 6. The Lab — Technical Arsenal & Skills Proficiency Grid */}
+          <TheLab />
+
+          {/* 7. Newswire — Verified Achievements, Tech Star Summit Winner, Conferences */}
+          <NewswireSection />
+
+          {/* 8. Outro Announcement & Official Footer — "BUILD SOMETHING WORTH EXPLORING" */}
+          <ContactFinale />
+        </main>
+      </div>
+    </SmoothScroll>
   );
 }

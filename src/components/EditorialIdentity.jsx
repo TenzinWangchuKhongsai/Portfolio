@@ -1,209 +1,301 @@
 import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 
-/* ─── Typographic Skills Arena ─── */
-const skills = [
-  { text: 'PYTHON', size: 'text-4xl sm:text-6xl lg:text-7xl', style: 'font-serif font-bold text-[#0B0D0F]' },
-  { text: 'JAVA', size: 'text-3xl sm:text-5xl lg:text-6xl', style: 'font-mono text-[#4A5260]' },
-  { text: 'JAVASCRIPT', size: 'text-4xl sm:text-6xl lg:text-7xl', style: 'font-serif italic text-[#D97736]' },
-  { text: 'ANDROID', size: 'text-3xl sm:text-5xl lg:text-6xl', style: 'font-mono font-semibold text-[#0B0D0F]' },
-  { text: 'MACHINE LEARNING', size: 'text-2xl sm:text-4xl lg:text-5xl', style: 'font-serif text-[#242830]' },
-  { text: 'COMPUTER VISION', size: 'text-2xl sm:text-4xl lg:text-5xl', style: 'font-serif italic text-[#4A5260]' },
-  { text: 'SYSTEM DESIGN', size: 'text-3xl sm:text-5xl lg:text-6xl', style: 'font-mono text-[#0B0D0F]' },
-  { text: 'SQL', size: 'text-3xl sm:text-5xl', style: 'font-mono text-[#D97736]' },
-  { text: 'HTML / CSS', size: 'text-2xl sm:text-4xl', style: 'font-serif text-[#4A5260]' },
-  { text: 'C', size: 'text-3xl sm:text-5xl', style: 'font-mono text-[#0B0D0F]' },
-  { text: 'PANDAS', size: 'text-2xl sm:text-4xl', style: 'font-mono text-[#525B6A]' },
-  { text: 'NUMPY', size: 'text-2xl sm:text-4xl', style: 'font-mono text-[#525B6A]' },
-  { text: 'STATISTICS', size: 'text-2xl sm:text-4xl', style: 'font-serif italic text-[#0B0D0F]' },
-  { text: 'AUTOMATION', size: 'text-3xl sm:text-5xl', style: 'font-mono text-[#D97736]' },
+const skillsTicker = [
+  'PYTHON',
+  'FINITE AUTOMATA',
+  'MACHINE LEARNING',
+  'REACT',
+  'SYSTEM DESIGN',
+  'DATA SCIENCE',
+  'IoT PROTOCOLS',
+  'CYBERSECURITY',
+  'SQL & DBMS',
+  'AUTOMATION AGENTS',
+  'C & JAVA',
+  'COMPUTER VISION',
 ];
 
 export default function EditorialIdentity() {
-  const heroRef = useRef(null);
-  const galleryRef = useRef(null);
-  const skillsRef = useRef(null);
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.15 });
 
-  const heroInView = useInView(heroRef, { once: true, amount: 0.2 });
-  const galleryInView = useInView(galleryRef, { once: true, amount: 0.15 });
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  });
+  const palmY = useTransform(scrollYProgress, [0, 1], ['-15%', '15%']);
+  const portraitImgY = useTransform(scrollYProgress, [0, 1], ['-7%', '7%']);
+  const portraitScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.14, 1.06, 1.14]);
 
   return (
-    <section id="identity" className="snap-section section-light relative bg-[#F5F2EC] text-[#0B0D0F] overflow-hidden">
-      
-      {/* ─── Hero: Portrait + Identity Statement ─── */}
-      <div ref={heroRef} className="scene-pad py-16 sm:py-20 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          
-          {/* Left: Typography & Bio */}
-          <div className="lg:col-span-7 space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={heroInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5 }}
-              className="font-mono text-[10px] text-[#7A6B58] tracking-[0.2em] font-semibold uppercase"
-            >
-              CHAPTER 04 // THE HUMAN BUILDER
-            </motion.div>
+    <section
+      ref={sectionRef}
+      id="identity"
+      className="relative select-none overflow-hidden"
+      style={{
+        background: '#07090E',
+        paddingTop: 'clamp(5rem, 8vw, 8rem)',
+        paddingBottom: 'clamp(5rem, 8vw, 8rem)',
+      }}
+    >
+      {/* Decorative Palm Silhouette with Scroll Parallax */}
+      <motion.img
+        src="/gta/art-right.0829t2opnft4.svg"
+        alt=""
+        style={{ y: palmY }}
+        className="absolute top-10 right-0 w-80 lg:w-[480px] opacity-[0.06] pointer-events-none select-none"
+      />
 
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              animate={heroInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="font-serif text-5xl sm:text-7xl xl:text-8xl text-[#0B0D0F] leading-[0.86] tracking-tight"
-            >
-              I BUILD TO<br />
-              <span className="italic text-[#D97736]">UNDERSTAND.</span>
-            </motion.h2>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={heroInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="space-y-4 max-w-xl"
-            >
-              <div className="w-12 h-0.5 bg-[#D97736]" />
-              <p className="font-sans text-base sm:text-lg text-[#242830] leading-relaxed">
-                Engineering student concurrently studying Computer Science & Engineering at SIMATS while pursuing foundational Data Science with IIT Madras.
-              </p>
-              <p className="font-sans text-sm text-[#4A5260] leading-relaxed">
-                True understanding is earned by building from first principles — offline-first database pipelines, neural newsrooms, computer vision engines, and rigid body physics from mathematical vectors.
-              </p>
-            </motion.div>
-
-            {/* Quick stats */}
-            <div className="flex flex-wrap gap-6 font-mono text-[10px] text-[#525B6A] pt-2">
-              <div>
-                <span className="text-[#A39682] block text-[9px]">LOCATION</span>
-                <span className="font-semibold text-[#0B0D0F]">CHENNAI, INDIA</span>
-              </div>
-              <div>
-                <span className="text-[#A39682] block text-[9px]">FOCUS</span>
-                <span className="font-semibold text-[#0B0D0F]">SYSTEMS · DATA · AUTOMATION</span>
-              </div>
-              <div>
-                <span className="text-[#A39682] block text-[9px]">ACADEMIC</span>
-                <span className="font-semibold text-[#0B0D0F]">SIMATS (9.0) · IIT MADRAS (8.0)</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right: Large Portrait */}
+      <div
+        className="max-w-[1520px] mx-auto relative z-10"
+        style={{ padding: '0 clamp(1.25rem, 4vw, 3.5rem)' }}
+      >
+        {/* ── Section Header ── */}
+        <div className="mb-12 sm:mb-16">
           <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={heroInView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.9, delay: 0.15 }}
-            className="lg:col-span-5 flex justify-center"
+            className="font-mono text-xs font-semibold tracking-[0.28em] uppercase text-[#F8B1C6] mb-3"
           >
-            <div className="relative w-full max-w-[440px] aspect-[3/4] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.1)] border border-black/8 bg-[#E8E2D8]">
-              <img
-                src="/me/WhatsApp Image 2026-08-24 at 7.07.27 PM.jpeg"
-                alt="Tenzin Wangchu Khongsai"
-                className="w-full h-full object-cover object-center contrast-[1.05]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-              <div className="absolute bottom-4 inset-x-4 flex items-center justify-between font-mono text-[10px] text-white">
-                <div>
-                  <div className="font-bold tracking-wider">TENZIN WANGCHU KHONGSAI</div>
-                  <div className="text-[9px] text-white/70">SIMATS ENGINEERING</div>
-                </div>
-                <span className="w-2 h-2 rounded-full bg-[#D97736]" />
-              </div>
-            </div>
+            CHAPTER 03 // THE BUILDER
           </motion.div>
-        </div>
-      </div>
 
-      {/* ─── Documentary Photography + Academics (compact 2-in-1) ─── */}
-      <div ref={galleryRef} className="scene-pad py-12 max-w-7xl mx-auto border-t border-black/8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={galleryInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7 }}
-        >
-          <div className="font-mono text-[10px] text-[#7A6B58] tracking-widest uppercase mb-6">
-            EVIDENCE // RECOGNITION & ACADEMICS
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
-            
-            {/* Photo 01: Award */}
-            <div className="md:col-span-5">
-              <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden shadow-md border border-black/8">
-                <img
-                  src="/me/WhatsApp Image 2026-08-24 at 7.04.07 PM.jpeg"
-                  alt="Tech Star Summit Award"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-3 left-3 font-mono text-[9px] bg-black/70 backdrop-blur text-white px-2.5 py-1 rounded">
-                  TECH STAR SUMMIT · SIMATS
-                </div>
-              </div>
-            </div>
-
-            {/* Photo 02 + Text */}
-            <div className="md:col-span-3">
-              <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden shadow-md border border-black/8">
-                <img
-                  src="/me/WhatsApp Image 2026-09-16 at 9.38.38 PM.jpeg"
-                  alt="World Youth Skills Day"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-3 left-3 font-mono text-[9px] bg-black/70 backdrop-blur text-white px-2.5 py-1 rounded">
-                  YOUTH SKILLS DAY
-                </div>
-              </div>
-            </div>
-
-            {/* Academic Cards */}
-            <div className="md:col-span-4 space-y-4">
-              <div className="p-5 rounded-xl bg-white/70 border border-black/5 shadow-sm">
-                <div className="flex items-center justify-between font-mono text-[10px] text-[#D97736] mb-2">
-                  <span>B.E. COMPUTER SCIENCE</span>
-                  <span className="font-bold px-1.5 py-0.5 rounded bg-[#D97736]/12">9.0</span>
-                </div>
-                <h3 className="font-serif text-xl text-[#0B0D0F] font-bold mb-1">SIMATS Engineering</h3>
-                <p className="text-xs text-[#4A5260] leading-relaxed">
-                  Data Structures, Systems Architecture, Computer Networks, IoT Platforms. Expected 2029.
-                </p>
-              </div>
-
-              <div className="p-5 rounded-xl bg-white/70 border border-black/5 shadow-sm">
-                <div className="flex items-center justify-between font-mono text-[10px] text-[#D97736] mb-2">
-                  <span>BS DATA SCIENCE</span>
-                  <span className="font-bold px-1.5 py-0.5 rounded bg-[#D97736]/12">8.0</span>
-                </div>
-                <h3 className="font-serif text-xl text-[#0B0D0F] font-bold mb-1">IIT Madras</h3>
-                <p className="text-xs text-[#4A5260] leading-relaxed">
-                  Linear Algebra, Computational Statistics, Discrete Mathematics, Algorithmic Thinking.
-                </p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* ─── Typographic Skills Arena — Kinetic Infinite Marquee ─── */}
-      <div ref={skillsRef} className="py-14 border-t border-black/8 overflow-hidden">
-        <div className="scene-pad max-w-7xl mx-auto font-mono text-[10px] text-[#7A6B58] tracking-widest uppercase mb-6">
-          TECHNICAL REPERTOIRE
-        </div>
-
-        <div className="flex overflow-hidden whitespace-nowrap select-none">
-          <motion.div
-            animate={{ x: [0, -1800] }}
-            transition={{ repeat: Infinity, duration: 25, ease: 'linear' }}
-            className="flex items-baseline gap-x-8 pr-8"
+          <motion.h2
+            className="font-black uppercase text-white tracking-tight leading-[0.88]"
+            style={{
+              fontFamily: "'Barlow Condensed', sans-serif",
+              fontSize: 'clamp(3rem, 9vw, 7.5rem)',
+            }}
           >
-            {skills.concat(skills).map((s, idx) => (
-              <span
-                key={idx}
-                className={`${s.size} ${s.style} tracking-tight hover:text-[#D97736] hover:scale-105 transition-all cursor-pointer inline-block`}
+            CHENNAI, INDIA.<br />
+            <span style={{ color: '#FBC086' }}>I BUILD TO UNDERSTAND.</span>
+          </motion.h2>
+        </div>
+
+        {/* ── Main Two-Column Editorial Grid ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+          {/* Left Column: Biography, Philosophy & Education */}
+          <div className="lg:col-span-7 flex flex-col gap-6">
+            <div className="space-y-4 max-w-2xl">
+              <p className="text-white/80 text-base sm:text-lg leading-relaxed font-sans">
+                Computer Science &amp; Engineering undergraduate at <strong className="text-white">SIMATS Engineering</strong>, concurrently pursuing foundational Data Science coursework at <strong className="text-white">IIT Madras</strong>.
+              </p>
+              <p className="text-white/60 text-sm sm:text-base leading-relaxed">
+                Rather than treating software as abstract syntax, I build systems from the ground up to understand how state machines catch real-time threats, how automated agent pipelines compress newsroom latency, and how IoT topologies optimize energy consumption.
+              </p>
+            </div>
+
+            {/* Academic Credential Cards (GTA VI dark card style) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              {/* Card 1: SIMATS */}
+              <div
+                className="p-6 rounded-[22px] flex flex-col justify-between border border-white/[0.08] transition-all duration-300 hover:border-[#FBC086]/30"
+                style={{ background: '#0F131C' }}
               >
-                {s.text}
-                <span className="text-black/15 ml-8">/</span>
-              </span>
-            ))}
-          </motion.div>
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-[10px] tracking-[0.2em] font-bold uppercase text-[#FBC086]">
+                      B.E. CSE
+                    </span>
+                    <span className="font-mono text-xs font-black px-2.5 py-0.5 rounded-full bg-[#FBC086]/15 text-[#FBC086] border border-[#FBC086]/30">
+                      9.0 CGPA
+                    </span>
+                  </div>
+                  <h3
+                    className="font-black text-xl text-white uppercase"
+                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  >
+                    SIMATS ENGINEERING
+                  </h3>
+                  <p className="text-xs text-white/50 mt-1 leading-relaxed">
+                    Data Structures, Automata Theory, Operating Systems, Networks, and Distributed Architecture. Expected 2029.
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-white/5 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FBC086]" />
+                  <span className="font-mono text-[9px] tracking-widest uppercase text-white/40">
+                    CHENNAI, TAMIL NADU
+                  </span>
+                </div>
+              </div>
+
+              {/* Card 2: IIT Madras */}
+              <div
+                className="p-6 rounded-[22px] flex flex-col justify-between border border-white/[0.08] transition-all duration-300 hover:border-[#F8B1C6]/30"
+                style={{ background: '#0F131C' }}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-[10px] tracking-[0.2em] font-bold uppercase text-[#F8B1C6]">
+                      BS DATA SCIENCE
+                    </span>
+                    <span className="font-mono text-xs font-black px-2.5 py-0.5 rounded-full bg-[#F8B1C6]/15 text-[#F8B1C6] border border-[#F8B1C6]/30">
+                      8.0 CGPA
+                    </span>
+                  </div>
+                  <h3
+                    className="font-black text-xl text-white uppercase"
+                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  >
+                    IIT MADRAS
+                  </h3>
+                  <p className="text-xs text-white/50 mt-1 leading-relaxed">
+                    Linear Algebra, Discrete Mathematics, Computational Thinking, Statistics, and Python. Foundational Level Complete.
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-white/5 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#F8B1C6]" />
+                  <span className="font-mono text-[9px] tracking-widest uppercase text-white/40">
+                    NATIONAL INSTITUTE OF EXCELLENCE
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Metrics Strip */}
+            <div className="flex flex-wrap gap-6 pt-4 border-t border-white/10">
+              {[
+                { label: 'LOCATION', value: 'CHENNAI, INDIA' },
+                { label: 'AVAILABILITY', value: 'OPEN TO RELOCATION' },
+                { label: 'ROLES', value: 'SOFTWARE / AI / SYSTEMS' },
+              ].map(({ label, value }) => (
+                <div key={label}>
+                  <div className="font-mono text-[9px] tracking-[0.2em] uppercase text-white/40">
+                    {label}
+                  </div>
+                  <div className="font-mono text-xs font-bold tracking-wider text-white mt-0.5">
+                    {value}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Column: Visual Portrait & Award Recognition */}
+          <div className="lg:col-span-5 flex flex-col gap-6">
+            {/* Portrait Card with Window Parallax */}
+            <motion.div
+              data-cursor="INSPECT"
+              data-cursor-tone="pink"
+              className="group relative w-full overflow-hidden rounded-[28px] border border-white/[0.08] transition-all duration-500 hover:border-[#F8B1C6]/30 cursor-pointer"
+              style={{
+                aspectRatio: '4/5',
+                background: '#0F131C',
+                boxShadow: '0 20px 50px rgba(0,0,0,0.6)',
+              }}
+            >
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <motion.img
+                  src="/me/Images/WhatsApp_Image_2026-08-24_at_6.56.57_cc24506f_2K.jpg"
+                  alt="Tenzin Wangchu Khongsai"
+                  style={{
+                    y: portraitImgY,
+                    scale: portraitScale,
+                    height: '116%',
+                    top: '-8%',
+                    position: 'absolute',
+                    width: '100%',
+                    objectFit: 'cover',
+                    objectPosition: 'top',
+                    filter: 'brightness(0.92) contrast(1.08)',
+                  }}
+                  className="transition-transform duration-700 ease-out group-hover:scale-[1.18]"
+                />
+              </div>
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: 'linear-gradient(to top, rgba(9, 12, 17, 0.95) 0%, rgba(9, 12, 17, 0.2) 40%, transparent 100%)',
+                }}
+              />
+              {/* Bottom Label inside Portrait */}
+              <div className="absolute bottom-6 inset-x-6 flex items-end justify-between">
+                <div>
+                  <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-[#FBC086] font-bold block mb-1">
+                    STUDENT &amp; DEVELOPER
+                  </span>
+                  <h4
+                    className="font-black text-2xl text-white uppercase leading-none"
+                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  >
+                    TENZIN WANGCHU KHONGSAI
+                  </h4>
+                </div>
+                <span className="w-2.5 h-2.5 rounded-full bg-[#F8B1C6] animate-pulse" />
+              </div>
+            </motion.div>
+
+            {/* Award Photo Strip with Viewport Spring */}
+            <div className="grid grid-cols-2 gap-4">
+              <div
+                data-cursor="INSPECT"
+                data-cursor-tone="peach"
+                className="group relative overflow-hidden rounded-[20px] border border-white/[0.08] transition-all duration-500 hover:border-[#FBC086]/30 cursor-pointer"
+                style={{ aspectRatio: '4/3', background: '#0F131C' }}
+              >
+                <img
+                  src="/me/Images/techstar_portrait_framed.jpg"
+                  alt="Tech Star Summit Award"
+                  className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
+                  <span className="font-mono text-[9px] font-bold text-[#FBC086] tracking-wider uppercase">
+                    FIRST PRIZE // TECH STAR SUMMIT
+                  </span>
+                </div>
+              </div>
+
+              <div
+                data-cursor="INSPECT"
+                data-cursor-tone="peach"
+                className="group relative overflow-hidden rounded-[20px] border border-white/[0.08] transition-all duration-500 hover:border-[#FBC086]/30 cursor-pointer"
+                style={{ aspectRatio: '4/3', background: '#0F131C' }}
+              >
+                <img
+                  src="/me/Images/beach_portrait_framed.jpg"
+                  alt="Youth Skills Day"
+                  className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
+                  <span className="font-mono text-[9px] font-bold text-[#F8B1C6] tracking-wider uppercase">
+                    DELEGATE // YOUTH SKILLS DAY
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Continuous Technical Marquee Ticker ── */}
+        <div
+          data-cursor="SKILLS"
+          data-cursor-tone="peach"
+          className="mt-16 pt-8 border-t border-white/10 overflow-hidden"
+          style={{
+            maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)',
+          }}
+        >
+          <div className="flex overflow-hidden whitespace-nowrap select-none group">
+            <motion.div
+              animate={{ x: ['0%', '-50%'] }}
+              transition={{ repeat: Infinity, duration: 28, ease: 'linear' }}
+              className="flex items-baseline gap-8 pr-8 group-hover:[animation-play-state:paused]"
+            >
+              {skillsTicker.concat(skillsTicker).concat(skillsTicker).map((skill, idx) => (
+                <span
+                  key={idx}
+                  className="font-black uppercase tracking-tight text-white/40 hover:text-white transition-colors cursor-default"
+                  style={{
+                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontSize: 'clamp(2rem, 5vw, 4rem)',
+                  }}
+                >
+                  <span style={{ color: idx % 2 === 0 ? '#FFFFFF' : '#FBC086' }}>{skill}</span>
+                  <span className="text-white/15 ml-8">/</span>
+                </span>
+              ))}
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>
