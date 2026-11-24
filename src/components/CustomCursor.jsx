@@ -1,30 +1,15 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
-/* ═══════════════════════════════════════════════════════════════════
-   PREMIUM DYNAMIC ACTION CURSOR
-   Inspired by www.worksruthi.com & Awwwards site of the year:
-   - High-performance Lerp tracking with velocity & inertia
-   - Morphing action badge with verbs: "PLAY ▶", "EXPLORE ↗", "LEARN ↗", "HIRE ✉", "CLOSE ✕"
-   - Subtle magnetic pull & specular glow
-   - Adapts to dark/light/sunset surfaces
-   - Automatically disabled on touch / mobile devices
-   ═══════════════════════════════════════════════════════════════════ */
+/*
+ * CustomCursor — zero setState, pure DOM writes.
+ * All position + state updates bypass React entirely for 60fps smoothness.
+ */
 
 export default function CustomCursor() {
-  const [activeVerb, setActiveVerb] = useState('');
-  const [isHovered, setIsHovered] = useState(false);
-  const [isClicking, setIsClicking] = useState(false);
-  const [cursorTone, setCursorTone] = useState('peach'); // 'peach' | 'pink' | 'white'
-  const [ripples, setRipples] = useState([]);
-
-  const dotRef = useRef(null);
-  const ringRef = useRef(null);
-  const badgeRef = useRef(null);
-
-  const pos = useRef({ x: -200, y: -200 });
-  const ringPos = useRef({ x: -200, y: -200 });
-  const target = useRef({ x: -200, y: -200 });
-  const raf = useRef(null);
+  const dotRef    = useRef(null);
+  const ringRef   = useRef(null);
+  const badgeRef  = useRef(null);
+  const badgeLbl  = useRef(null);
 
   const isTouch =
     typeof window !== 'undefined' &&
@@ -33,177 +18,190 @@ export default function CustomCursor() {
   useEffect(() => {
     if (isTouch) return;
 
-    const onMouseMove = (e) => {
-      target.current = { x: e.clientX, y: e.clientY };
+    const dot   = dotRef.current;
+    const ring  = ringRef.current;
+    const badge = badgeRef.current;
+    const lbl   = badgeLbl.current;
+    if (!dot || !ring || !badge) return;
+
+    const pos     = { x: -200, y: -200 };
+    const ringPos = { x: -200, y: -200 };
+    const target  = { x: -200, y: -200 };
+    let   raf     = null;
+    let   tone    = '#FBC086'; // peach default
+
+    const lerp = (a, b, f) => a + (b - a) * f;
+
+    const setTone = (t) => { tone = t; };
+
+    const setVerb = (verb) => {
+      if (verb) {
+        lbl.textContent = verb;
+        badge.style.opacity = '1';
+        badge.style.scale = '1';
+        dot.style.opacity = '0';
+        ring.style.opacity = '0';
+      } else {
+        badge.style.opacity = '0';
+        badge.style.scale = '0.4';
+        dot.style.opacity = '0.9';
+        ring.style.opacity = '0.8';
+      }
+      badge.style.background = tone;
     };
 
-    const onMouseDown = (e) => {
-      setIsClicking(true);
-      const newRipple = {
-        id: Date.now() + Math.random(),
-        x: e.clientX,
-        y: e.clientY,
-      };
-      setRipples((prev) => [...prev.slice(-3), newRipple]);
-    };
-
-    const onMouseUp = () => {
-      setIsClicking(false);
-    };
-
-    const onMouseOver = (e) => {
-      const targetEl = e.target;
-      const cursorTarget = targetEl.closest('[data-cursor]');
-      const clickable = targetEl.closest('a, button, [role="button"], input, .cursor-pointer');
-
-      if (cursorTarget) {
-        const verb = cursorTarget.getAttribute('data-cursor');
-        const tone = cursorTarget.getAttribute('data-cursor-tone') || 'peach';
-        setActiveVerb(verb || '');
-        setCursorTone(tone);
-        setIsHovered(true);
-      } else if (clickable) {
-        setActiveVerb('');
-        setCursorTone('pink');
-        setIsHovered(true);
+    const setHovered = (on) => {
+      if (on) {
+        dot.style.width = '8px';
+        dot.style.height = '8px';
+        dot.style.background = tone;
+        ring.style.width = '48px';
+        ring.style.height = '48px';
+        ring.style.borderColor = tone;
+      } else {
+        dot.style.width = '6px';
+        dot.style.height = '6px';
+        dot.style.background = '#FFFFFF';
+        ring.style.width = '32px';
+        ring.style.height = '32px';
+        ring.style.borderColor = 'rgba(255,255,255,0.4)';
       }
     };
-
-    const onMouseOut = (e) => {
-      const related = e.relatedTarget;
-      if (!related || !related.closest('[data-cursor], a, button, [role="button"]')) {
-        setActiveVerb('');
-        setIsHovered(false);
-      }
-    };
-
-    // Smooth Lerp loop: dot is ultra-responsive (0.4), trailing ring has fluid inertia (0.16)
-    const lerp = (start, end, factor) => start + (end - start) * factor;
 
     const animate = () => {
-      pos.current.x = lerp(pos.current.x, target.current.x, 0.4);
-      pos.current.y = lerp(pos.current.y, target.current.y, 0.4);
+      pos.x = lerp(pos.x, target.x, 0.4);
+      pos.y = lerp(pos.y, target.y, 0.4);
+      ringPos.x = lerp(ringPos.x, target.x, 0.16);
+      ringPos.y = lerp(ringPos.y, target.y, 0.16);
 
-      ringPos.current.x = lerp(ringPos.current.x, target.current.x, 0.16);
-      ringPos.current.y = lerp(ringPos.current.y, target.current.y, 0.16);
+      dot.style.transform   = `translate3d(${pos.x}px,${pos.y}px,0) translate(-50%,-50%)`;
+      ring.style.transform  = `translate3d(${ringPos.x}px,${ringPos.y}px,0) translate(-50%,-50%)`;
+      badge.style.transform = `translate3d(${ringPos.x}px,${ringPos.y}px,0) translate(-50%,-50%)`;
 
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate3d(${pos.current.x}px, ${pos.current.y}px, 0) translate(-50%, -50%)`;
-      }
+      raf = requestAnimationFrame(animate);
+    };
+    raf = requestAnimationFrame(animate);
 
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0) translate(-50%, -50%)`;
-      }
-
-      if (badgeRef.current) {
-        badgeRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0) translate(-50%, -50%)`;
-      }
-
-      raf.current = requestAnimationFrame(animate);
+    const onMove = (e) => {
+      target.x = e.clientX;
+      target.y = e.clientY;
     };
 
-    raf.current = requestAnimationFrame(animate);
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
-    window.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('mouseup', onMouseUp);
-    document.addEventListener('mouseover', onMouseOver, { passive: true });
-    document.addEventListener('mouseout', onMouseOut, { passive: true });
+    const onOver = (e) => {
+      const ct = e.target.closest('[data-cursor]');
+      const cl = e.target.closest('a, button, [role="button"], input, .cursor-pointer');
+      if (ct) {
+        const v = ct.getAttribute('data-cursor') || '';
+        const t = ct.getAttribute('data-cursor-tone') === 'pink' ? '#F8B1C6'
+                : ct.getAttribute('data-cursor-tone') === 'white' ? '#FFFFFF'
+                : '#FBC086';
+        setTone(t);
+        setHovered(true);
+        setVerb(v);
+      } else if (cl) {
+        setTone('#F8B1C6');
+        setHovered(true);
+        setVerb('');
+      }
+    };
+
+    const onOut = (e) => {
+      const rel = e.relatedTarget;
+      if (!rel || !rel.closest('[data-cursor], a, button, [role="button"]')) {
+        setVerb('');
+        setHovered(false);
+      }
+    };
+
+    // Lightweight click ripple — one-shot CSS animation via a temporary span
+    const onDown = (e) => {
+      dot.style.width = '4px';
+      dot.style.height = '4px';
+      ring.style.width = '26px';
+      ring.style.height = '26px';
+      // small DOM ripple — appended and self-removed
+      const ripple = document.createElement('span');
+      ripple.style.cssText = `
+        position:fixed;left:${e.clientX}px;top:${e.clientY}px;
+        width:36px;height:36px;border-radius:50%;pointer-events:none;
+        border:1.5px solid ${tone};opacity:0.6;
+        transform:translate(-50%,-50%);
+        animation:cursor-ping 0.6s ease-out forwards;
+        z-index:9999;
+      `;
+      document.body.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 650);
+    };
+    const onUp = () => {
+      dot.style.width = '6px';
+      dot.style.height = '6px';
+      ring.style.width = '32px';
+      ring.style.height = '32px';
+    };
+
+    window.addEventListener('mousemove', onMove, { passive: true });
+    document.addEventListener('mouseover', onOver, { passive: true });
+    document.addEventListener('mouseout',  onOut,  { passive: true });
+    window.addEventListener('mousedown',   onDown);
+    window.addEventListener('mouseup',     onUp);
 
     return () => {
-      cancelAnimationFrame(raf.current);
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('mouseup', onMouseUp);
-      document.removeEventListener('mouseover', onMouseOver);
-      document.removeEventListener('mouseout', onMouseOut);
+      cancelAnimationFrame(raf);
+      window.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseover', onOver);
+      document.removeEventListener('mouseout',  onOut);
+      window.removeEventListener('mousedown',   onDown);
+      window.removeEventListener('mouseup',     onUp);
     };
   }, [isTouch]);
 
   if (isTouch) return null;
 
-  const toneBg =
-    cursorTone === 'pink'
-      ? '#F8B1C6'
-      : cursorTone === 'peach'
-      ? '#FBC086'
-      : '#FFFFFF';
-
-  const toneText = '#0B0E14';
-
   return (
     <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden select-none">
-      {/* ── 1. Sharp Center Dot (hidden when active verb is shown) ── */}
+      {/* Sharp center dot */}
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 rounded-full transition-opacity duration-200 pointer-events-none"
+        className="fixed top-0 left-0 rounded-full pointer-events-none"
         style={{
-          width: isClicking ? '4px' : isHovered && !activeVerb ? '8px' : '6px',
-          height: isClicking ? '4px' : isHovered && !activeVerb ? '8px' : '6px',
-          background: isHovered ? toneBg : '#FFFFFF',
-          opacity: activeVerb ? 0 : 0.9,
-          boxShadow: isHovered ? `0 0 12px ${toneBg}` : '0 0 8px rgba(255,255,255,0.7)',
+          width: '6px', height: '6px',
+          background: '#FFFFFF',
+          opacity: 0.9,
+          boxShadow: '0 0 8px rgba(255,255,255,0.7)',
           willChange: 'transform',
+          transition: 'width 0.15s, height 0.15s, background 0.15s',
         }}
       />
 
-      {/* ── 2. Fluid Trailing Ring (scales up smoothly on hover, shrinks on click) ── */}
+      {/* Trailing ring */}
       <div
         ref={ringRef}
-        className="fixed top-0 left-0 rounded-full pointer-events-none transition-all duration-300 ease-out"
+        className="fixed top-0 left-0 rounded-full pointer-events-none"
         style={{
-          width: activeVerb ? '0px' : isClicking ? '26px' : isHovered ? '48px' : '32px',
-          height: activeVerb ? '0px' : isClicking ? '26px' : isHovered ? '48px' : '32px',
-          border: `1.5px solid ${isHovered ? toneBg : 'rgba(255, 255, 255, 0.4)'}`,
-          opacity: activeVerb ? 0 : 0.8,
-          background: isHovered ? `${toneBg}12` : 'transparent',
-          boxShadow: isHovered ? `0 0 20px ${toneBg}40` : 'none',
-          willChange: 'transform, width, height',
+          width: '32px', height: '32px',
+          border: '1.5px solid rgba(255,255,255,0.4)',
+          opacity: 0.8,
+          willChange: 'transform',
+          transition: 'width 0.2s ease-out, height 0.2s ease-out, border-color 0.2s, opacity 0.2s',
         }}
       />
 
-      {/* ── 3. Dynamic Click Ripples ── */}
-      {ripples.map((rip) => (
-        <span
-          key={rip.id}
-          className="fixed rounded-full pointer-events-none animate-ping"
-          style={{
-            left: rip.x,
-            top: rip.y,
-            width: '36px',
-            height: '36px',
-            transform: 'translate(-50%, -50%)',
-            border: `1.5px solid ${toneBg}`,
-            opacity: 0.6,
-            animationDuration: '0.6s',
-            animationIterationCount: '1',
-            animationFillMode: 'forwards',
-          }}
-        />
-      ))}
-
-      {/* ── 3. Worksruthi-Style Morphing Action Badge (PLAY, EXPLORE, LEARN, HIRE) ── */}
+      {/* Morphing action badge */}
       <div
         ref={badgeRef}
-        className="fixed top-0 left-0 pointer-events-none transition-all duration-200 ease-out"
-        style={{
-          opacity: activeVerb ? 1 : 0,
-          transformOrigin: 'center center',
-          scale: activeVerb ? 1 : 0.4,
-          willChange: 'transform, opacity',
-        }}
+        className="fixed top-0 left-0 pointer-events-none"
+        style={{ opacity: 0, scale: 0.4, willChange: 'transform, opacity', transition: 'opacity 0.15s, scale 0.15s' }}
       >
         <div
           className="flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-full font-bold uppercase text-[11px] tracking-wider shadow-2xl backdrop-blur-md"
-          style={{
-            background: toneBg,
-            color: toneText,
-            boxShadow: `0 8px 30px ${toneBg}60, 0 2px 10px rgba(0,0,0,0.8)`,
-            border: '1px solid rgba(255, 255, 255, 0.6)',
-          }}
+          style={{ background: '#FBC086', color: '#0B0E14', border: '1px solid rgba(255,255,255,0.6)' }}
         >
-          <span>{activeVerb}</span>
+          <span ref={badgeLbl} />
         </div>
       </div>
+
+      {/* Keyframe for ripple */}
+      <style>{`@keyframes cursor-ping { to { transform:translate(-50%,-50%) scale(2.2); opacity:0; } }`}</style>
     </div>
   );
 }

@@ -1,5 +1,8 @@
 import { useRef } from 'react';
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
+
+// useScroll + useTransform removed — they fire on every scroll tick, killing fps.
+// Palm and portrait now use static CSS; GSAP ScrollAnimations handles the entrance.
 
 const skillsTicker = [
   'PYTHON',
@@ -19,14 +22,7 @@ const skillsTicker = [
 export default function EditorialIdentity() {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.15 });
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end start'],
-  });
-  const palmY = useTransform(scrollYProgress, [0, 1], ['-15%', '15%']);
-  const portraitImgY = useTransform(scrollYProgress, [0, 1], ['-7%', '7%']);
-  const portraitScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.14, 1.06, 1.14]);
+  // Removed: useScroll, useTransform (palmY, portraitImgY, portraitScale)
 
   return (
     <section
@@ -39,11 +35,10 @@ export default function EditorialIdentity() {
         paddingBottom: 'clamp(5rem, 8vw, 8rem)',
       }}
     >
-      {/* Decorative Palm Silhouette with Scroll Parallax */}
-      <motion.img
+      {/* Decorative Palm Silhouette — static, entrance handled by GSAP */}
+      <img
         src="/gta/art-right.0829t2opnft4.svg"
         alt=""
-        style={{ y: palmY }}
         className="absolute top-10 right-0 w-80 lg:w-[480px] opacity-[0.06] pointer-events-none select-none"
       />
 
@@ -184,12 +179,10 @@ export default function EditorialIdentity() {
               }}
             >
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <motion.img
+                <img
                   src="/me/Images/WhatsApp_Image_2026-08-24_at_6.56.57_cc24506f_2K.jpg"
                   alt="Tenzin Wangchu Khongsai"
                   style={{
-                    y: portraitImgY,
-                    scale: portraitScale,
                     height: '116%',
                     top: '-8%',
                     position: 'absolute',

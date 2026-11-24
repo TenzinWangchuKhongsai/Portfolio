@@ -52,49 +52,48 @@ const trailers = [
   },
 ];
 
-/* ── 3D Interactive Tilt Card Component ── */
+/* ── 3D Interactive Tilt Card Component — zero setState, pure DOM writes ── */
 function TiltCard({ children, className = '', style = {}, onClick, dataCursor = 'PLAY', dataCursorTone = 'pink' }) {
-  const [rotate, setRotate] = useState({ x: 0, y: 0 });
-  const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
+  const cardRef  = useRef(null);
+  const glareRef = useRef(null);
 
   const onMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const rotateX = ((y / rect.height) - 0.5) * -10;
-    const rotateY = ((x / rect.width) - 0.5) * 10;
-    setRotate({ x: rotateX, y: rotateY });
-    setGlare({ x: (x / rect.width) * 100, y: (y / rect.height) * 100, opacity: 0.18 });
+    const rX = ((y / rect.height) - 0.5) * -10;
+    const rY = ((x / rect.width)  - 0.5) *  10;
+    card.style.transform = `perspective(1000px) rotateX(${rX}deg) rotateY(${rY}deg)`;
+    if (glareRef.current) {
+      glareRef.current.style.background = `radial-gradient(circle at ${(x/rect.width)*100}% ${(y/rect.height)*100}%, rgba(255,255,255,0.25) 0%, transparent 60%)`;
+      glareRef.current.style.opacity = '0.18';
+    }
   };
 
   const onMouseLeave = () => {
-    setRotate({ x: 0, y: 0 });
-    setGlare({ x: 50, y: 50, opacity: 0 });
+    if (cardRef.current)  cardRef.current.style.transform  = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+    if (glareRef.current) glareRef.current.style.opacity   = '0';
   };
 
   return (
     <div
+      ref={cardRef}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
       onClick={onClick}
       data-cursor={dataCursor}
       data-cursor-tone={dataCursorTone}
       className={`relative overflow-hidden cursor-pointer ${className}`}
-      style={{
-        ...style,
-        transform: `perspective(1000px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg)`,
-        transition: 'transform 0.22s ease-out',
-        willChange: 'transform',
-      }}
+      style={{ ...style, transition: 'transform 0.22s ease-out', willChange: 'transform' }}
     >
       {children}
       {/* Dynamic Specular Glare */}
       <div
-        className="absolute inset-0 pointer-events-none rounded-[inherit] transition-opacity duration-300 z-20"
-        style={{
-          background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255,255,255,0.25) 0%, transparent 60%)`,
-          opacity: glare.opacity,
-        }}
+        ref={glareRef}
+        className="absolute inset-0 pointer-events-none rounded-[inherit] z-20"
+        style={{ opacity: 0, transition: 'opacity 0.3s' }}
       />
     </div>
   );
